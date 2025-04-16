@@ -1,0 +1,87 @@
+<h2>✅ Order Confirmation</h2>
+<p>Thank you for your order, <%= @order.user&.username || "Customer" %>! Below are your order details.</p>
+
+<hr>
+
+<!-- ORDER SUMMARY TABLE -->
+<h3>🧾 Order Summary</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #ccc;">
+  <tbody>
+    <tr><th align="left" style="padding: 8px;">Order Number:</th><td style="padding: 8px;"><%= @order.id %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Name on Card:</th><td style="padding: 8px;"><%= @order.name_on_card.presence || 'Not Provided' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Billing Address:</th><td style="padding: 8px;"><%= @order.billing_address.presence || 'Not Provided' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Delivery Address:</th><td style="padding: 8px;"><%= @order.delivery_address.presence || 'Not Provided' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Phone Number:</th><td style="padding: 8px;"><%= @order.phone_number.presence || 'Not Provided' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Email Address:</th><td style="padding: 8px;"><%= @order.email.presence || 'Not Provided' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Payment Method:</th><td style="padding: 8px;"><%= @order.payment_method&.capitalize || 'N/A' %></td></tr>
+    <tr><th align="left" style="padding: 8px;">Status:</th><td style="padding: 8px;"><%= @order.status&.capitalize || 'Pending' %></td></tr>
+  </tbody>
+</table>
+
+<!-- ORDER ITEMS TABLE -->
+<h3>🛒 Order Items</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #ccc;">
+  <thead style="background-color: #f0f0f0;">
+    <tr>
+      <th style="padding: 10px; text-align: left;">Product</th>
+      <th style="padding: 10px; text-align: center;">Quantity</th>
+      <th style="padding: 10px; text-align: right;">Unit Price</th>
+      <th style="padding: 10px; text-align: right;">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order.order_items.each do |item| %>
+      <% price = item.price || 0 %>
+      <% quantity = item.quantity || 0 %>
+      <tr>
+        <td style="padding: 8px;"><%= item.product&.name || "Unknown Product" %></td>
+        <td style="padding: 8px; text-align: center;"><%= quantity %></td>
+        <td style="padding: 8px; text-align: right;">$<%= '%.2f' % price %></td>
+        <td style="padding: 8px; text-align: right;">$<%= '%.2f' % (price * quantity) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- PRICING SUMMARY TABLE -->
+<h3>💰 Pricing Summary</h3>
+<table style="width: 50%; border-collapse: collapse; margin-bottom: 40px; border: 1px solid #ccc;">
+  <tbody>
+    <tr>
+      <th align="left" style="padding: 8px;">Subtotal:</th>
+      <td align="right" style="padding: 8px;">$<%= '%.2f' % @subtotal %></td>
+    </tr>
+
+    <% if @pst.to_f.positive? %>
+      <tr>
+        <th align="left" style="padding: 8px;">PST:</th>
+        <td align="right" style="padding: 8px;">$<%= '%.2f' % @pst %></td>
+      </tr>
+    <% end %>
+
+    <% if @gst.to_f.positive? %>
+      <tr>
+        <th align="left" style="padding: 8px;">GST:</th>
+        <td align="right" style="padding: 8px;">$<%= '%.2f' % @gst %></td>
+      </tr>
+    <% end %>
+
+    <% if @hst.to_f.positive? %>
+      <tr>
+        <th align="left" style="padding: 8px;">HST:</th>
+        <td align="right" style="padding: 8px;">$<%= '%.2f' % @hst %></td>
+      </tr>
+    <% end %>
+
+    <tr style="font-weight: bold; background-color: #f9f9f9;">
+      <th align="left" style="padding: 10px;">Total (Incl. Tax):</th>
+      <td align="right" style="padding: 10px;">$<%= '%.2f' % (@total || 0) %></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you have any questions about your order, please contact us at
+  <a href="mailto:support@engraveandadore.com">support@engraveandadore.com</a>.
+</p>
+
+<p style="font-size: 0.9em; color: #777;">© 2025 Engrave and Adore | All Rights Reserved.</p>

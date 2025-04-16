@@ -1,0 +1,61 @@
+<h1>Edit Product</h1>
+
+<%= form_with(model: @product, local: true) do |form| %>
+  <% if @product.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
+      <ul>
+        <% @product.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description, class: "form-control" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :price %>
+    <%= form.number_field :price, class: "form-control", step: 0.01 %>
+  </div>
+
+  <!-- Category Selection -->
+  <div class="field">
+    <%= form.label :category_ids, "Select Categories" %><br>
+    <%= form.collection_check_boxes(:category_ids, Category.all, :id, :name) do |cb| %>
+      <div class="form-check">
+        <%= cb.check_box(class: "form-check-input", checked: @product.categories.include?(Category.find(cb.value))) %>
+        <%= cb.label(class: "form-check-label") %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Active Storage File Upload for Image -->
+  <div class="field">
+    <%= form.label :image %>
+    <%= form.file_field :image, class: "form-control" %>
+  </div>
+
+  <% if @product.image.attached? %>
+    <h3>Current Image:</h3>
+    <%= image_tag @product.image, class: "img-thumbnail", width: 200 %>
+    <br>
+    <%= link_to 'Remove Image', remove_image_product_path(@product), method: :delete, data: { confirm: 'Are you sure you want to remove this image?' }, class: "btn btn-danger mt-2" %>
+  <% else %>
+    <p>No image attached</p>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit "Update Product", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', product_path(@product), class: "btn btn-secondary mt-3" %>

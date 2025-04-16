@@ -1,0 +1,56 @@
+ActiveAdmin.setup do |config|
+  # == Basic Configuration
+  config.site_title = "Engrave Adore"
+  config.default_namespace = :admin
+  config.authentication_method = :authenticate_admin_user!
+  config.current_user_method = :current_admin_user
+  config.logout_link_path = :destroy_admin_user_session_path
+  config.logout_link_method = :delete
+  config.root_to = 'dashboard#index'
+
+  # == Security
+  config.filter_attributes = [:encrypted_password, :password, :password_confirmation]
+
+  # == UI Configuration
+  config.localize_format = :long
+  config.batch_actions = true
+
+  # == Comments
+  config.comments = false  # Disable admin comments unless needed
+
+  # == Menu Customization
+  config.namespace :admin do |admin|
+    admin.build_menu do |menu|
+      menu.add label: 'Dashboard', priority: 1
+
+      # Add your main resources here
+      # menu.add label: 'Products', priority: 2, url: admin_products_path
+
+      # Add utility navigation
+      admin.add_logout_button_to_menu menu, priority: 100
+    end
+  end
+
+  # == Performance
+  config.skip_before_action :track_active_admin_visit, only: :index
+
+  # == CSV Export
+  config.csv_options = {
+    col_sep: ',',
+    force_quotes: true,
+    byte_order_mark: "\xEF\xBB\xBF" # UTF-8 BOM for Excel compatibility
+  }
+
+  # == Pagination
+  config.default_per_page = 25
+  config.max_per_page = 10_000
+
+  # == Filters
+  config.include_default_association_filters = true
+
+  # == Webpacker (if using)
+  # config.use_webpacker = true
+
+  # == Footer
+  config.footer = "Engrave Adore Admin v#{ActiveAdmin::VERSION} • #{Date.current.year}"
+end

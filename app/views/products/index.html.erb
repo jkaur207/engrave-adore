@@ -1,0 +1,77 @@
+<%= form_with url: search_products_path, method: :get, local: true do |f| %>
+  <div class="d-flex mb-4">
+    <!-- Category Dropdown -->
+    <div class="form-group mr-3">
+      <%= f.label :category, "Select Category", class: "mr-2" %>
+      <%= f.select :category, options_for_select([['All Categories', '']] + Category.all.pluck(:name, :id), selected: params[:category]), class: "form-control custom-dropdown" %>
+    </div>
+
+    <!-- Search Input for Keyword -->
+    <div class="form-group mr-3">
+      <%= f.label :query, "Search Products", class: "mr-2" %>
+      <%= f.text_field :query, placeholder: "Enter product name or description...", class: "form-control search-input" %>
+    </div>
+  </div>
+
+  <div class="d-flex mb-4">
+    <!-- Search Button for Category -->
+    <div class="form-group mr-3">
+      <%= f.submit "Search by Category", class: "btn btn-primary search-btn", name: "search_by_category" %>
+    </div>
+
+    <!-- Search Button for Keyword -->
+    <div class="form-group">
+      <%= f.submit "Search by Keyword", class: "btn btn-secondary search-btn", name: "search_by_keyword" %>
+    </div>
+  </div>
+<% end %>
+
+<!-- Filter Buttons -->
+<div class="my-3">
+  <strong>Filter:</strong>
+  <%= link_to "All", products_path, class: "btn btn-outline-secondary btn-sm #{'active' if params[:filter].blank?}" %>
+  <%= link_to "Newly Added", products_path(filter: 'newly_added'), class: "btn btn-outline-primary btn-sm #{'active' if params[:filter] == 'newly_added'}" %>
+  <%= link_to "Recently Updated", products_path(filter: 'recently_updated'), class: "btn btn-outline-info btn-sm #{'active' if params[:filter] == 'recently_updated'}" %>
+  <%= link_to "On Sale", products_path(filter: 'on_sale'), class: "btn btn-outline-success btn-sm #{'active' if params[:filter] == 'on_sale'}" %>
+</div>
+
+<h2>Products</h2>
+
+<% if @products.any? %>
+  <div class="row">
+    <% @products.each do |product| %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><%= product.name %></h5>
+            <p class="card-text"><%= product.description %></p>
+            <p class="card-text">$<%= product.price %></p>
+
+            <%= link_to 'Show', product_path(product), class: 'btn btn-primary' %>
+
+            <% if current_user&.admin? %>
+              <%= link_to 'Edit', edit_product_path(product), class: 'btn btn-warning' %>
+              <%= form_with(model: product, method: :delete, data: { confirm: 'Are you sure?' }, class: 'd-inline') do |form| %>
+                <%= form.submit 'Delete', class: 'btn btn-danger' %>
+              <% end %>
+            <% end %>
+
+            <%= button_to 'Add to Cart', add_to_cart_cart_path(product_id: product.id), method: :post, class: 'btn btn-primary' %>
+
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @products %>
+  </div>
+<% else %>
+  <p>No products available.</p>
+<% end %>
+
+<% if current_user&.admin? %>
+  <%= link_to 'Add Product', new_product_path, class: 'btn btn-success mt-3' %>
+<% end %>

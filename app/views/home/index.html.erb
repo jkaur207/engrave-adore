@@ -1,0 +1,51 @@
+<h1>Welcome, <%= current_user.username.capitalize %>!</h1>
+<p><strong>Your role:</strong> <%= current_user.role&.capitalize || "No Role Assigned" %></p>
+
+<hr>
+
+<h2>Your Account Overview</h2>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>🛍️ Recent Orders</h3>
+    <% if current_user.orders.any? %>
+      <ul class="list-group">
+        <% current_user.orders.order(created_at: :desc).limit(5).each do |order| %>
+          <li class="list-group-item">
+            <strong>Order #<%= order.id %></strong> - <%= order.created_at.strftime("%B %d, %Y") %>
+            <br>
+            <span>Status: <%= order.status&.capitalize || "Not Available" %></span>
+            <br>
+            <%= link_to "View Order", order_path(order), class: "btn btn-sm btn-primary mt-2" %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>You haven't placed any orders yet.</p>
+      <%= link_to "Start Shopping", products_path, class: "btn btn-success" %>
+    <% end %>
+  </div>
+
+  <div class="col-md-6">
+    <h3>⚙️ Account Settings</h3>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-outline-secondary btn-sm" %>
+      </li>
+      <li class="list-group-item">
+        <%= link_to "Change Password", edit_user_registration_path(anchor: "password"), class: "btn btn-outline-secondary btn-sm" %>
+      </li>
+      <li class="list-group-item">
+        <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger btn-sm" %>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<h2>🛒 Shopping Actions</h2>
+<div class="d-flex gap-3">
+  <%= link_to "Browse Products", products_path, class: "btn btn-primary" %>
+  <%= link_to "View Cart", cart_path, class: "btn btn-warning" %>
+</div>

@@ -1,0 +1,100 @@
+<h1>Checkout</h1>
+
+<%= form_for @order, url: checkout_path do |f| %>
+  <% if @order.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(@order.errors.count, "error") %> prevented this order from being placed:</h4>
+      <ul>
+        <% @order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="cart-summary">
+    <h3>Your Cart</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @cart_items.each do |product_id, item_data| %>
+          <tr>
+            <td><%= item_data[:name] %></td>
+            <td><%= item_data[:quantity] %></td>
+            <td><%= number_to_currency(item_data[:price]) %></td>
+            <td><%= number_to_currency(item_data[:quantity] * item_data[:price]) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="cart-total">
+      <h3>Subtotal: <%= number_to_currency(@cart_items.sum { |_, data| data[:quantity] * data[:price] }) %></h3>
+    </div>
+  </div>
+
+  <div class="billing-info">
+    <h3>Billing and Delivery Information</h3>
+
+    <div class="form-group">
+      <%= f.label :name_on_card %>
+      <%= f.text_field :name_on_card, required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :billing_address, "Billing Address" %>
+      <%= f.text_field :billing_address, required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :delivery_address, "Delivery Address" %>
+      <%= f.text_field :delivery_address, required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :phone_number %>
+      <%= f.text_field :phone_number, required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email, required: true, class: "form-control" %>
+    </div>
+
+    <!-- New Province Dropdown -->
+    <div class="form-group">
+      <%= f.label :province %>
+      <%= f.select :province, options_for_select([
+        ["Alberta", "AB"],
+        ["British Columbia", "BC"],
+        ["Manitoba", "MB"],
+        ["New Brunswick", "NB"],
+        ["Newfoundland and Labrador", "NL"],
+        ["Nova Scotia", "NS"],
+        ["Ontario", "ON"],
+        ["Prince Edward Island", "PE"],
+        ["Quebec", "QC"],
+        ["Saskatchewan", "SK"],
+        ["Northwest Territories", "NT"],
+        ["Nunavut", "NU"],
+        ["Yukon", "YT"]
+      ], selected: @order.province), required: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :payment_method, "Payment Method" %>
+      <%= f.select :payment_method, options_for_select(['Credit Card', 'PayPal', 'Bank Transfer'], @order.payment_method), required: true, class: "form-control" %>
+    </div>
+
+    <%= f.submit "Place Order", class: "btn btn-primary mt-3" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back to Cart', cart_path, class: 'btn btn-secondary mt-2' %>

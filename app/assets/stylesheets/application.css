@@ -1,15 +1,182 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+/* Import Bootstrap */
+@import "bootstrap";
+
+/* Modern Aesthetic Styles */
+body {
+  font-family: 'Montserrat', sans-serif; /* Clean and professional */
+  background-color: #f5f2e9; /* Light, soft beige background */
+  color: #3a3a3a;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Navbar (Elegant & Subtle) */
+.navbar {
+  background-color: #ffffff !important;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0d6cc; /* Soft taupe border */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif; /* Luxury serif for brand */
+  font-size: 1.9rem; /* Slightly larger font */
+  font-weight: 700;
+  color: #6b4b3a !important; /* Rich coffee brown */
+  letter-spacing: 0.5px;
+}
+
+.navbar-nav .nav-link {
+  color: #5a4a42 !important; /* Muted clay */
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #9a7b65 !important; /* Warm terracotta */
+}
+
+/* Cards (Soft & Structured) */
+.card {
+  border: none;
+  border-radius: 12px; /* More rounded corners for softness */
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Display (Clean & Airy) */
+.product {
+  background: #ffffff;
+  padding: 1.75rem; /* Slightly more padding */
+  border-radius: 12px; /* More rounded edges for a soft feel */
+  margin-bottom: 1.5rem;
+  border: 1px solid #f0e8e0; /* Soft linen border */
+}
+
+.product h2 {
+  font-family: 'Playfair Display', serif;
+  color: #5a4a42; /* Deep taupe */
+  font-weight: 600;
+}
+
+.product p {
+  color: #6d5c54; /* Muted brown */
+}
+
+.product img {
+  max-width: 100%;
+  border-radius: 10px; /* Slightly rounded corners */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Buttons (Tactile & Refined) */
+.btn {
+  border-radius: 8px; /* Slightly larger radius for more tactile feel */
+  padding: 0.7rem 1.7rem; /* Slightly larger padding */
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #6b4b3a; /* Deep coffee */
+  border: none;
+  color: white; /* Text color for contrast */
+}
+
+.btn-primary:hover {
+  background-color: #8a6d5b; /* Muted brown */
+}
+
+.btn-danger {
+  background-color: #c4a586; /* Soft beige */
+  border: none;
+  color: #5a4a42;
+}
+
+.btn-danger:hover {
+  background-color: #a78a6e; /* Warm taupe */
+  color: white;
+}
+
+/* Footer (Subtle & Polished) */
+footer {
+  background-color: #ffffff;
+  color: #6d5c54;
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #f0e8e0;
+  font-size: 1rem; /* Slightly smaller font size */
+}
+
+footer p {
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px; /* Slightly smaller font on mobile */
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.9rem;
+  }
+
+  .product {
+    padding: 1.25rem; /* Less padding on smaller screens */
+  }
+
+  .btn {
+    padding: 0.6rem 1.4rem;
+  }
+}
+/* Pagination (Soft, Rounded & Centered) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-item {
+  list-style: none;
+}
+
+.page-link {
+  font-family: 'Montserrat', sans-serif;
+  color: #6b4b3a; /* Deep coffee */
+  background-color: #fff;
+  border: 1px solid #e0d6cc; /* Soft taupe border */
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.page-link:hover {
+  background-color: #f0e8e0; /* Soft linen */
+  color: #5a4a42;
+}
+
+.page-item.active .page-link {
+  background-color: #6b4b3a; /* Active background */
+  color: #fff;
+  border-color: #6b4b3a;
+  font-weight: 600;
+}
+
+.page-item.disabled .page-link {
+  color: #c0b3a8;
+  pointer-events: none;
+  background-color: #faf9f7;
+  border-color: #e8dfd6;
+}

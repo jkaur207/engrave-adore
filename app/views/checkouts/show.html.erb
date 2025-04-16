@@ -1,0 +1,56 @@
+<div class="checkout-summary">
+  <h1>Review Your Order</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3>Order Items</h3>
+        </div>
+        <div class="card-body">
+          <% if @cart_items.any? %>
+            <ul class="list-group">
+              <% @cart_items.each do |product_id, details| %>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong><%= details[:name] %></strong> ×
+                      <%= details[:quantity] %>
+                    </div>
+                    <div>
+                      $<%= number_to_currency(details[:price].to_f * details[:quantity].to_i, unit: "") %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+
+            <div class="mt-3 text-end">
+              <h4>Subtotal: $<%= number_to_currency(@cart_items.sum { |_,d| d[:price].to_f * d[:quantity].to_i }, unit: "") %></h4>
+            </div>
+
+            <!-- Checkout Button -->
+            <div class="mt-4 text-end">
+              <%= button_to 'Proceed to Checkout', checkout_path, class: 'btn btn-primary' %>
+            </div>
+
+          <% else %>
+            <p>Your cart is empty</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h3>Proceed to Checkout</h3>
+        </div>
+        <div class="card-body">
+          <%= link_to "Continue to Payment", new_checkout_path, class: "btn btn-primary btn-lg w-100" %>
+          <%= link_to "Back to Cart", cart_path, class: "btn btn-outline-secondary mt-2 w-100" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

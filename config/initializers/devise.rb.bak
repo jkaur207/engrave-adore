@@ -1,0 +1,54 @@
+# frozen_string_literal: true
+
+Devise.setup do |config|
+  # The secret key used by Devise. Devise uses this key to generate
+  # random tokens. If you are using Rails 5.2+, Devise will use
+  # `secret_key_base` from `config/secrets.yml` automatically.
+  # config.secret_key = 'your-secret-key-here'
+
+  # ==> Controller configuration
+  # Configure the parent class to the Devise controllers.
+  # ActiveAdmin uses Devise for authentication, so we set the parent controller accordingly.
+  config.parent_controller = 'ActiveAdmin::DeviseController'
+
+  # ==> Mailer Configuration
+  config.mailer_sender = 'no-reply@yourdomain.com'
+
+  # Configure the ORM (ActiveRecord for Rails apps)
+  require 'devise/orm/active_record'
+
+  # ==> Authentication settings
+  # Ensure Devise uses email for authentication (default)
+  config.authentication_keys = [:email]
+
+  # Make authentication case-insensitive and remove whitespace
+  config.case_insensitive_keys = [:email]
+  config.strip_whitespace_keys = [:email]
+
+  # ==> Database authentication
+  # Define password encryption settings
+  config.stretches = Rails.env.test? ? 1 : 12
+
+  # ==> Password validation
+  config.password_length = 6..128
+  config.email_regexp = /\A[^@\s]+@[^@\s]+\z/
+
+  # ==> Account Recovery
+  config.reset_password_within = 6.hours
+
+  # ==> Rememberable
+  config.remember_for = 2.weeks
+
+  # ==> Security
+  # Lockable accounts (optional)
+  # config.lock_strategy = :failed_attempts
+  # config.unlock_keys = [:email]
+  # config.unlock_strategy = :email
+  # config.maximum_attempts = 5
+  # config.unlock_in = 1.hour
+
+  # ==> Sign-out behavior
+  config.sign_out_via = :delete
+
+  # ==> Redirect after login (Defined in `ApplicationController`)
+end

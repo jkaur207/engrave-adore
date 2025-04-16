@@ -42,23 +42,29 @@ gem "aws-sdk-s3" # For ActiveStorage if using AWS
 gem "canada_post" # For Canadian postal codes and provinces
 # OR manually create provinces table (see note below)
 
+# CSS & Styling
+gem "bootstrap", "~> 5.3"
+gem "sassc-rails", "~> 2.1" # Sass compiler for Rails
+
+# Development and Testing
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
-  gem "brakeman", require: false
-  gem "rubocop-rails-omakase", require: false
-  gem "factory_bot_rails" # For testing
+  gem "brakeman", require: false # Security analysis tool
+  gem "rubocop-rails-omakase", require: false # Rubocop for Rails
+  gem "factory_bot_rails" # For testing (factories)
 end
 
 group :development do
-  gem "web-console"
-  gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
+  gem "web-console" # Rails console in browser
+  gem "error_highlight", ">= 0.4.0", platforms: [:ruby] # Code highlighting for errors
   gem "annotate" # Auto-generate schema comments
   gem "bullet" # N+1 query detection
 end
 
 group :test do
-  gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+  gem "capybara" # Integration testing (browser-based)
+  gem "selenium-webdriver" # Webdriver for browser testing
+  gem "webdrivers" # Webdriver management
   gem "cypress-rails" # For end-to-end testing (5.5)
+  gem 'select2-rails'
 end
