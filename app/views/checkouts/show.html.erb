@@ -1,56 +1,95 @@
-<div class="checkout-summary">
-  <h1>Review Your Order</h1>
+<div class="checkout-summary" style="font-family: 'Roboto', sans-serif; padding: 40px;">
+  <h1 class="text-center" style="color: #333; font-size: 2.5rem; font-weight: bold;">Review Your Order 🛍️</h1>
 
   <div class="row">
-    <div class="col-md-8">
-      <div class="card mb-4">
-        <div class="card-header">
-          <h3>Order Items</h3>
+    <!-- Order Items Section -->
+    <div class="col-lg-8">
+      <div class="card mb-4" style="border-radius: 12px; border: 1px solid #e0e0e0; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
+        <div class="card-header" style="background-color: #f7f7f7; color: #444; font-size: 1.5rem; border-radius: 12px 12px 0 0;">
+          <h3 class="mb-0">Order Items</h3>
         </div>
         <div class="card-body">
           <% if @cart_items.any? %>
-            <ul class="list-group">
+            <ul class="list-group" style="padding-left: 0;">
               <% @cart_items.each do |product_id, details| %>
-                <li class="list-group-item">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <strong><%= details[:name] %></strong> ×
-                      <%= details[:quantity] %>
-                    </div>
-                    <div>
-                      $<%= number_to_currency(details[:price].to_f * details[:quantity].to_i, unit: "") %>
-                    </div>
+                <li class="list-group-item d-flex justify-content-between align-items-center" style="border-radius: 8px; margin-bottom: 10px; background-color: #f9f9f9;">
+                  <div>
+                    <strong><%= details[:name] %></strong> × <%= details[:quantity] %>
+                  </div>
+                  <div>
+                    $<%= number_to_currency(details[:price].to_f * details[:quantity].to_i, unit: "") %>
                   </div>
                 </li>
               <% end %>
             </ul>
 
             <div class="mt-3 text-end">
-              <h4>Subtotal: $<%= number_to_currency(@cart_items.sum { |_,d| d[:price].to_f * d[:quantity].to_i }, unit: "") %></h4>
+              <h4 class="text-dark" style="font-weight: bold;">Subtotal: $<%= number_to_currency(@cart_items.sum { |_,d| d[:price].to_f * d[:quantity].to_i }, unit: "") %></h4>
             </div>
-
-            <!-- Checkout Button -->
-            <div class="mt-4 text-end">
-              <%= button_to 'Proceed to Checkout', checkout_path, class: 'btn btn-primary' %>
-            </div>
-
           <% else %>
-            <p>Your cart is empty</p>
+            <p class="text-center" style="font-style: italic; color: #777;">Uh oh, looks like your cart is empty. Don't worry, we have lots of amazing stuff for you to check out! 🛒</p>
           <% end %>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h3>Proceed to Checkout</h3>
+    <!-- Checkout Actions Section -->
+    <div class="col-lg-4">
+      <div class="card" style="border-radius: 12px; border: 1px solid #e0e0e0; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
+        <div class="card-header" style="background-color: #f7f7f7; color: #444; font-size: 1.5rem; border-radius: 12px 12px 0 0;">
+          <h3 class="mb-0">Ready to Checkout?</h3>
         </div>
-        <div class="card-body">
-          <%= link_to "Continue to Payment", new_checkout_path, class: "btn btn-primary btn-lg w-100" %>
+        <div class="card-body text-center">
+          <%= link_to "Continue to Payment", new_checkout_path, class: "btn btn-outline-primary btn-lg w-100" %>
           <%= link_to "Back to Cart", cart_path, class: "btn btn-outline-secondary mt-2 w-100" %>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Fun message at the bottom -->
+  <div class="text-center mt-5">
+    <p style="font-size: 1rem; color: #777; font-style: italic;">Thanks for shopping with us! 🎉 We're packing your order with extra love and care! 💖</p>
+    <p style="font-size: 0.85rem; color: #aaa;">© 2025 Engrave and Adore | All Rights Reserved</p>
+  </div>
 </div>
+
+<!-- Subtle Footer -->
+<div class="text-center mt-5">
+  <p style="font-size: 1rem; color: #777;">Still thinking about what to buy? Don’t stress, there’s always room for more! 😜</p>
+</div>
+
+<!-- Button Hover Effects and Subtle Animations -->
+<style>
+  .btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .list-group-item {
+    transition: background-color 0.3s ease;
+  }
+
+  .list-group-item:hover {
+    background-color: #fafafa;
+  }
+</style>

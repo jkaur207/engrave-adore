@@ -3,8 +3,13 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  # Permit custom fields for sign_up and account_update actions
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :terms_and_conditions])
+    # For sign_up action (new user registration)
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :terms_and_conditions, :address, :phone_number])
+
+    # For account_update action (updating user profile)
+    devise_parameter_sanitizer.permit(:account_update, keys: [:username, :address, :phone_number])
   end
 
   # Redirect after login for different user types

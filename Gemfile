@@ -24,6 +24,7 @@ gem "arctic_admin" # Optional for better ActiveAdmin UI
 
 # Payments
 gem "stripe"
+gem 'stripe_event'
 gem "money-rails"
 
 # Product Management

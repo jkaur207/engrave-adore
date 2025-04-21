@@ -1,9 +1,11 @@
 <h2>✅ Order Confirmation</h2>
 <p>Thank you for your order, <%= @order.user&.username || "Customer" %>! Below are your order details.</p>
 
+<p><strong>Thank you for placing your order with us!</strong> We are processing your order and will notify you once it's ready to be shipped. If you have any questions, feel free to contact us.</p>
+
 <hr>
 
-<!-- ORDER SUMMARY TABLE -->
+<!-- ORDER SUMMARY SECTION -->
 <h3>🧾 Order Summary</h3>
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #ccc;">
   <tbody>
@@ -18,7 +20,7 @@
   </tbody>
 </table>
 
-<!-- ORDER ITEMS TABLE -->
+<!-- ORDER ITEMS SECTION -->
 <h3>🛒 Order Items</h3>
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #ccc;">
   <thead style="background-color: #f0f0f0;">
@@ -43,7 +45,7 @@
   </tbody>
 </table>
 
-<!-- PRICING SUMMARY TABLE -->
+<!-- PRICING SUMMARY SECTION -->
 <h3>💰 Pricing Summary</h3>
 <table style="width: 50%; border-collapse: collapse; margin-bottom: 40px; border: 1px solid #ccc;">
   <tbody>

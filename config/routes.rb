@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  post '/stripe/webhook', to: 'webhooks#stripe'
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   devise_for :users
 
@@ -19,10 +21,11 @@ Rails.application.routes.draw do
     delete 'clear', to: 'carts#clear_cart', as: :clear_cart
   end
 
-  # Updated checkout routes with proper confirmation path
+  # Updated checkout routes with payment endpoints
   resource :checkout, only: [:new, :create, :show] do
-    member do
+    collection do
       get :confirmation
+      post :create_checkout_session  # ✅ now correctly scoped
     end
   end
 

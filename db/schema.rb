@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_16_171000) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_16_182922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -112,12 +112,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_16_171000) do
     t.decimal "hst"
     t.string "province"
     t.integer "order_status"
-    t.string "payment_status"
+    t.string "payment_status", default: "unpaid"
     t.string "order_number"
     t.datetime "paid_at"
     t.decimal "tax_amount"
     t.decimal "qst"
     t.decimal "subtotal"
+    t.string "stripe_payment_intent_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

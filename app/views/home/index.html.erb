@@ -1,51 +1,290 @@
-<h1>Welcome, <%= current_user.username.capitalize %>!</h1>
-<p><strong>Your role:</strong> <%= current_user.role&.capitalize || "No Role Assigned" %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Account</title>
+  <style>
+    /* Global Styles
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #333;
+    }
 
-<hr>
+    .container {
+      width: 90%;
+      margin: 0 auto;
+      padding: 50px 0;
+    }
 
-<h2>Your Account Overview</h2>
+    /* Header
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: #4e89c1;
+      border-radius: 12px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+      max-width: 800px; /* Reduced header width
+      margin: 0 auto;  /* Center the header
+    }
 
-<div class="row">
-  <div class="col-md-6">
-    <h3>🛍️ Recent Orders</h3>
-    <% if current_user.orders.any? %>
-      <ul class="list-group">
-        <% current_user.orders.order(created_at: :desc).limit(5).each do |order| %>
-          <li class="list-group-item">
-            <strong>Order #<%= order.id %></strong> - <%= order.created_at.strftime("%B %d, %Y") %>
-            <br>
-            <span>Status: <%= order.status&.capitalize || "Not Available" %></span>
-            <br>
-            <%= link_to "View Order", order_path(order), class: "btn btn-sm btn-primary mt-2" %>
-          </li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p>You haven't placed any orders yet.</p>
-      <%= link_to "Start Shopping", products_path, class: "btn btn-success" %>
-    <% end %>
+    header h1 {
+      font-size: 3.2rem;
+      color: white;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    header p {
+      font-size: 1.5rem;
+      color: #f2f2f2;
+      margin-top: -5px;
+    }
+
+    /* Cards
+    .card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .card h3 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .list-group {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .list-group-item {
+      background-color: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .list-group-item:hover {
+      background-color: #e9ecef;
+    }
+
+    /* Buttons
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      display: inline-block;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #4e89c1;
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #4078a3;
+      transform: translateY(-3px);
+    }
+
+    .btn-outline-secondary {
+      background-color: transparent;
+      color: #4e89c1;
+      border: 2px solid #4e89c1;
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: #f0f4f8;
+      transform: translateY(-3px);
+    }
+
+    /* Layout for Account Overview
+    .overview {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .overview .col {
+      width: 48%;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 60px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      background-color: #f3f5f7;
+      border-radius: 12px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-section h2 {
+      font-size: 2.5rem;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* Fun Section
+    .fun-section {
+      background-color: #4e89c1;
+      padding: 40px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .fun-section h3 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .fun-section p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .fun-section .btn {
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      background-color: #f5b300;
+      color: #333;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .fun-section .btn:hover {
+      background-color: #e5a100;
+    }
+
+    /* Footer
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 30px;
+      background-color: #4e89c1;
+      border-radius: 10px;
+    }
+
+    footer p {
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    /* Responsive Design
+    @media (max-width: 768px) {
+      .overview {
+        flex-direction: column;
+      }
+
+      .overview .col {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Hey, <%= current_user.username.capitalize %>!</h1>
+    <p>Your personalized account hub</p>
+  </header>
+
+  <div class="container">
+    <!-- Hero Section without Background Image -->
+    <div class="hero-section">
+      <h2>Manage Your Account Like a Pro</h2>
+    </div>
+
+    <!-- Fun Section -->
+    <div class="fun-section">
+      <h3>Ready for New Adventures?</h3>
+      <p>Discover your latest orders, update your profile, and explore new shopping opportunities—all in one place!</p>
+      <%= link_to "Start Shopping", products_path, class: "btn" %>
+    </div>
+
+    <!-- Account Overview -->
+    <div class="overview">
+      <!-- Recent Orders Section -->
+      <div class="col">
+        <div class="card">
+          <h3>🛍️ Your Recent Orders</h3>
+          <% if current_user.orders.any? %>
+            <ul class="list-group">
+              <% current_user.orders.order(created_at: :desc).limit(5).each do |order| %>
+                <li class="list-group-item">
+                  <strong>Order #<%= order.id %></strong> - <%= order.created_at.strftime("%B %d, %Y") %>
+                  <br>
+                  <span>Status: <%= order.order_status&.capitalize || "Not Available" %></span>
+                  <br>
+                  <%= link_to "View Order", order_path(order), class: "btn btn-primary mt-2" %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>You haven't placed any orders yet.</p>
+            <%= link_to "Start Shopping", products_path, class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Account Settings Section -->
+      <div class="col">
+        <div class="card">
+          <h3>⚙️ Account Settings</h3>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-outline-secondary btn-sm" %>
+            </li>
+            <li class="list-group-item">
+              <%= link_to "Change Password", edit_user_registration_path(anchor: "password"), class: "btn btn-outline-secondary btn-sm" %>
+            </li>
+            <li class="list-group-item">
+              <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-secondary btn-sm" %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="text-center">
+      <h2>🛒 Shopping Actions</h2>
+      <div>
+        <%= link_to "Browse Products", products_path, class: "btn btn-primary" %>
+        <%= link_to "View Cart", cart_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
   </div>
 
-  <div class="col-md-6">
-    <h3>⚙️ Account Settings</h3>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-outline-secondary btn-sm" %>
-      </li>
-      <li class="list-group-item">
-        <%= link_to "Change Password", edit_user_registration_path(anchor: "password"), class: "btn btn-outline-secondary btn-sm" %>
-      </li>
-      <li class="list-group-item">
-        <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger btn-sm" %>
-      </li>
-    </ul>
-  </div>
-</div>
+  <footer>
+    <p>Thank you for shopping with us! We hope you have a pleasant experience.</p>
+  </footer>
 
-<hr>
-
-<h2>🛒 Shopping Actions</h2>
-<div class="d-flex gap-3">
-  <%= link_to "Browse Products", products_path, class: "btn btn-primary" %>
-  <%= link_to "View Cart", cart_path, class: "btn btn-warning" %>
-</div>
+</body>
+</html>

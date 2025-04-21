@@ -1,100 +1,130 @@
-<h1>Checkout</h1>
+<div class="checkout-container" style="font-family: 'Segoe UI', sans-serif; padding: 40px;">
+  <h1 class="text-center mb-4" style="font-weight: bold; color: #333;">Final Lap! Let’s Checkout!</h1>
 
-<%= form_for @order, url: checkout_path do |f| %>
-  <% if @order.errors.any? %>
-    <div class="alert alert-danger">
-      <h4><%= pluralize(@order.errors.count, "error") %> prevented this order from being placed:</h4>
-      <ul>
-        <% @order.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
+  <%= form_for @order, url: checkout_path do |f| %>
+    <% if @order.errors.any? %>
+      <div class="alert alert-danger">
+        <h4><%= pluralize(@order.errors.count, "error") %> stopped us in our tracks:</h4>
+        <ul>
+          <% @order.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary mb-5">
+      <h3 class="mb-3">🛒 What’s in Your Cart</h3>
+      <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cart_items.each do |product_id, item_data| %>
+            <tr>
+              <td><%= item_data[:name] %></td>
+              <td><%= item_data[:quantity] %></td>
+              <td><%= number_to_currency(item_data[:price]) %></td>
+              <td><%= number_to_currency(item_data[:quantity] * item_data[:price]) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="cart-total text-end mt-3">
+        <h4 class="text-success">Subtotal: <%= number_to_currency(@cart_items.sum { |_, data| data[:quantity] * data[:price] }) %></h4>
+        <p class="text-muted fst-italic">💡 Tip: Double-check before placing your order — your gifts are on their way to making someone smile!</p>
+      </div>
+    </div>
+
+    <!-- Billing and Delivery Info -->
+    <div class="billing-info">
+      <h3 class="mb-3">📦 Billing & Delivery Info</h3>
+
+      <div class="form-group mb-3">
+        <%= f.label :name_on_card, "Name on Card" %>
+        <%= f.text_field :name_on_card, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :billing_address, "Billing Address" %>
+        <%= f.text_field :billing_address, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :delivery_address, "Delivery Address" %>
+        <%= f.text_field :delivery_address, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :phone_number %>
+        <%= f.text_field :phone_number, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :email %>
+        <%= f.email_field :email, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :province %>
+        <%= f.select :province, options_for_select([
+          ["Alberta", "AB"],
+          ["British Columbia", "BC"],
+          ["Manitoba", "MB"],
+          ["New Brunswick", "NB"],
+          ["Newfoundland and Labrador", "NL"],
+          ["Nova Scotia", "NS"],
+          ["Ontario", "ON"],
+          ["Prince Edward Island", "PE"],
+          ["Quebec", "QC"],
+          ["Saskatchewan", "SK"],
+          ["Northwest Territories", "NT"],
+          ["Nunavut", "NU"],
+          ["Yukon", "YT"]
+        ], selected: @order.province), required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group mb-4">
+        <%= f.label :payment_method, "Payment Method" %>
+        <%= f.select :payment_method, options_for_select(['Credit Card', 'PayPal', 'Bank Transfer'], @order.payment_method), required: true, class: "form-control" %>
+      </div>
+
+      <%= f.submit "🎁 Place My Order", class: "btn btn-success btn-lg w-100" %>
     </div>
   <% end %>
 
-  <div class="cart-summary">
-    <h3>Your Cart</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @cart_items.each do |product_id, item_data| %>
-          <tr>
-            <td><%= item_data[:name] %></td>
-            <td><%= item_data[:quantity] %></td>
-            <td><%= number_to_currency(item_data[:price]) %></td>
-            <td><%= number_to_currency(item_data[:quantity] * item_data[:price]) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+  <%= link_to '← Back to Cart', cart_path, class: 'btn btn-outline-secondary mt-3' %>
 
-    <div class="cart-total">
-      <h3>Subtotal: <%= number_to_currency(@cart_items.sum { |_, data| data[:quantity] * data[:price] }) %></h3>
-    </div>
+  <div class="text-center mt-5">
+    <p class="text-muted">✨ You're just one step away from gift-giving greatness. Let the joy begin!</p>
+    <p style="font-size: 0.85rem; color: #aaa;">© 2025 Engrave and Adore – Crafted with care.</p>
   </div>
+</div>
 
-  <div class="billing-info">
-    <h3>Billing and Delivery Information</h3>
+<!-- Styling Tweaks -->
+<style>
+  .table th, .table td {
+    vertical-align: middle;
+  }
 
-    <div class="form-group">
-      <%= f.label :name_on_card %>
-      <%= f.text_field :name_on_card, required: true, class: "form-control" %>
-    </div>
+  .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
 
-    <div class="form-group">
-      <%= f.label :billing_address, "Billing Address" %>
-      <%= f.text_field :billing_address, required: true, class: "form-control" %>
-    </div>
+  .btn-success:hover {
+    transform: scale(1.02);
+  }
 
-    <div class="form-group">
-      <%= f.label :delivery_address, "Delivery Address" %>
-      <%= f.text_field :delivery_address, required: true, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :phone_number %>
-      <%= f.text_field :phone_number, required: true, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, required: true, class: "form-control" %>
-    </div>
-
-    <!-- New Province Dropdown -->
-    <div class="form-group">
-      <%= f.label :province %>
-      <%= f.select :province, options_for_select([
-        ["Alberta", "AB"],
-        ["British Columbia", "BC"],
-        ["Manitoba", "MB"],
-        ["New Brunswick", "NB"],
-        ["Newfoundland and Labrador", "NL"],
-        ["Nova Scotia", "NS"],
-        ["Ontario", "ON"],
-        ["Prince Edward Island", "PE"],
-        ["Quebec", "QC"],
-        ["Saskatchewan", "SK"],
-        ["Northwest Territories", "NT"],
-        ["Nunavut", "NU"],
-        ["Yukon", "YT"]
-      ], selected: @order.province), required: true, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :payment_method, "Payment Method" %>
-      <%= f.select :payment_method, options_for_select(['Credit Card', 'PayPal', 'Bank Transfer'], @order.payment_method), required: true, class: "form-control" %>
-    </div>
-
-    <%= f.submit "Place Order", class: "btn btn-primary mt-3" %>
-  </div>
-<% end %>
-
-<%= link_to 'Back to Cart', cart_path, class: 'btn btn-secondary mt-2' %>
+  .btn-outline-secondary:hover {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+</style>

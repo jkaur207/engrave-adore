@@ -49,6 +49,20 @@ class Order < ApplicationRecord
   before_save :calculate_financials, if: :should_recalculate_financials?
   after_commit :update_order_totals, on: [:create, :update]
 
+  # Ransack configuration for ActiveAdmin searching
+  def self.ransackable_attributes(auth_object = nil)
+    %w[
+      billing_address created_at delivery_address email gst hst id
+      name_on_card order_number order_status payment_method payment_status
+      phone_number province pst qst subtotal tax_amount total updated_at
+      user_id
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[user order_items products]
+  end
+
   # Instance Methods
 
   def calculate_subtotal

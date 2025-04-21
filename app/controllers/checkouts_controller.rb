@@ -20,11 +20,23 @@ class CheckoutsController < ApplicationController
 
   def create
     @order = build_order_with_taxes
+    @order.order_status = 0  # pending
+    @order.payment_status = "unpaid"
 
     if @order.save
       create_order_items(@order, normalize_cart(session[:cart]))
-      session[:cart] = {}
-      redirect_to confirmation_checkout_path, notice: "Order placed successfully!"
+
+      # Store order ID for payment confirmation later
+      session[:pending_order_id] = @order.id
+
+      if params[:order][:payment_method] == "credit_card"
+        redirect_to create_checkout_session_path  # go to Stripe
+      else
+        # PayPal or bank transfer
+        session[:cart] = {}
+        @order.update(payment_status: "paid")
+        redirect_to confirmation_checkout_path, notice: "Order placed successfully!"
+      end
     else
       @cart_items = normalize_cart(session[:cart])
       flash.now[:alert] = @order.errors.full_messages.to_sentence
@@ -32,18 +44,48 @@ class CheckoutsController < ApplicationController
     end
   end
 
+  def create_checkout_session
+    order = Order.find(session[:pending_order_id])
+
+    line_items = order.order_items.map do |item|
+      {
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: item.product.name
+          },
+          unit_amount: (item.price * 100).to_i
+        },
+        quantity: item.quantity
+      }
+    end
+
+    session = Stripe::Checkout::Session.create(
+      payment_method_types: ['card'],
+      line_items: line_items,
+      mode: 'payment',
+      success_url: "#{root_url}checkout/confirmation?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "#{root_url}cart"
+    )
+
+    redirect_to session.url, allow_other_host: true
+  end
+
   def confirmation
     @order = current_user.orders.order(created_at: :desc).first
 
+    if @order && @order.payment_status != "paid"
+      @order.update(payment_status: "paid")
+      session[:cart] = {}
+    end
+
     if @order
-      # Set variables needed for the confirmation page
       @subtotal = @order.subtotal || 0
       @pst = @order.pst || 0
       @gst = @order.gst || 0
       @hst = @order.hst || 0
-      @qst = @order.qst || 0  # Make sure to include QST if you need it
+      @qst = @order.qst || 0
       @total = @order.total || 0
-      # No need to fetch order_items separately as they're accessed via @order.order_items
     else
       redirect_to root_path, alert: "No order found"
     end
@@ -53,16 +95,10 @@ class CheckoutsController < ApplicationController
 
   def build_order_with_taxes
     order = current_user.orders.new(order_params)
-
-    # Set order_status as integer (0) for pending
-    order.order_status = 0  # or use the enum helper: order.order_status_pending!
-    order.payment_status = "paid"
-
     cart = normalize_cart(session[:cart])
     subtotal = calculate_subtotal(cart)
     taxes = calculate_taxes(subtotal, current_user.province)
 
-    # Add tax_amount to calculation
     total_tax = taxes[:gst] + taxes[:pst] + taxes[:hst] + taxes[:qst]
 
     order.assign_attributes(
@@ -72,7 +108,7 @@ class CheckoutsController < ApplicationController
       hst: taxes[:hst],
       qst: taxes[:qst],
       total: taxes[:total],
-      tax_amount: total_tax  # Set tax_amount correctly
+      tax_amount: total_tax
     )
     order
   end

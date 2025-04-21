@@ -31,6 +31,20 @@
     <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
   </div>
 
+
+
+  <!-- Add address field -->
+  <div class="form-group">
+    <%= f.label :address %>
+    <%= f.text_field :address, class: "form-control" %>
+  </div>
+
+  <!-- Add phone number field -->
+  <div class="form-group">
+    <%= f.label :phone_number %>
+    <%= f.telephone_field :phone_number, class: "form-control" %>
+  </div>
+
   <div class="form-group">
     <%= f.check_box :terms_and_conditions %>
     <%= f.label :terms_and_conditions, "I agree to the Terms and Conditions" %>
@@ -39,6 +53,7 @@
   <div class="form-group">
     <%= f.submit "Sign Up", class: "btn btn-primary" %>
   </div>
+
 <% end %>
 
 <%= render "devise/shared/links" %>
