@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   post '/stripe/webhook', to: 'webhooks#stripe'
 
   devise_for :admin_users, ActiveAdmin::Devise.config
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations' }
 
   ActiveAdmin.routes(self)
 

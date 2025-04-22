@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :orders
+  belongs_to :province, optional: true
 
   # Devise authentication modules
   devise :database_authenticatable, :registerable,
@@ -25,13 +26,13 @@ class User < ApplicationRecord
       "failed_attempts", "id", "last_sign_in_at", "last_sign_in_ip", "locked_at",
       "remember_created_at", "reset_password_sent_at", "reset_password_token", "role",
       "sign_in_count", "terms_and_conditions", "unconfirmed_email", "unlock_token",
-      "updated_at", "username"
+      "updated_at", "username", "province_id"
     ]
   end
 
   # Specify the associations that should be searchable
   def self.ransackable_associations(auth_object = nil)
-    ["orders"]
+    ["orders", "province"]
   end
 
   private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_16_182922) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_21_023343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -164,6 +164,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_16_182922) do
     t.boolean "discontinued"
   end
 
+  create_table "provinces", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.decimal "gst"
+    t.decimal "pst"
+    t.decimal "hst"
+    t.decimal "qst"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.datetime "created_at", null: false
@@ -188,11 +199,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_16_182922) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.boolean "admin", default: false
-    t.string "province"
     t.string "address"
     t.string "phone_number"
+    t.bigint "province_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["province_id"], name: "index_users_on_province_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
@@ -205,4 +217,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_16_182922) do
   add_foreign_key "price_snapshots", "orders"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
+  add_foreign_key "users", "provinces"
 end

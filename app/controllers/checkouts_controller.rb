@@ -12,9 +12,10 @@ class CheckoutsController < ApplicationController
   def new
     @order = Order.new(
       email: current_user.email,
-      province: current_user.province,
+      province: current_user.province, # <- string value like 'ON'
       phone_number: current_user.phone_number
     )
+
     @cart_items = normalize_cart(session[:cart])
   end
 

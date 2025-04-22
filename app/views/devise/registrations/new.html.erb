@@ -31,8 +31,6 @@
     <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
   </div>
 
-
-
   <!-- Add address field -->
   <div class="form-group">
     <%= f.label :address %>
@@ -43,6 +41,12 @@
   <div class="form-group">
     <%= f.label :phone_number %>
     <%= f.telephone_field :phone_number, class: "form-control" %>
+  </div>
+
+  <!-- Add province dropdown -->
+  <div class="form-group">
+    <%= f.label :province_id, "Province" %>
+    <%= f.collection_select :province_id, Province.all, :id, :name, { prompt: "Select a Province" }, class: "form-control" %>
   </div>
 
   <div class="form-group">

@@ -6,24 +6,7 @@ class Order < ApplicationRecord
   has_many :price_snapshots, through: :order_items
   accepts_nested_attributes_for :order_items, allow_destroy: true
 
-  # Tax Rates by Province (defined early to avoid uninitialized constant error)
-  PROVINCIAL_TAX_RATES = {
-    'AB' => { gst: 0.05 },
-    'BC' => { gst: 0.05, pst: 0.07 },
-    'MB' => { gst: 0.05, pst: 0.07 },
-    'NB' => { hst: 0.15 },
-    'NL' => { hst: 0.15 },
-    'NT' => { gst: 0.05 },
-    'NS' => { hst: 0.15 },
-    'NU' => { gst: 0.05 },
-    'ON' => { hst: 0.13 },
-    'PE' => { hst: 0.15 },
-    'QC' => { gst: 0.05, qst: 0.09975 },
-    'SK' => { gst: 0.05, pst: 0.06 },
-    'YT' => { gst: 0.05 }
-  }.freeze
-
-  # Enums with prefixes to avoid conflicts - UPDATED to use integers
+  # Enums with prefixes to avoid conflicts
   enum order_status: {
     pending: 0,
     completed: 1,
@@ -38,10 +21,27 @@ class Order < ApplicationRecord
     refunded: "refunded"
   }, _prefix: :payment_status
 
+  # Constants
+  PROVINCIAL_TAX_RATES = {
+  'AB' => { gst: 0.05, pst: 0.0, hst: 0.0 },
+  'BC' => { gst: 0.05, pst: 0.07, hst: 0.0 },
+  'MB' => { gst: 0.05, pst: 0.07, hst: 0.0 },
+  'NB' => { gst: 0.0, pst: 0.0, hst: 0.15 },
+  'NL' => { gst: 0.0, pst: 0.0, hst: 0.15 },
+  'NS' => { gst: 0.0, pst: 0.0, hst: 0.15 },
+  'NT' => { gst: 0.05, pst: 0.0, hst: 0.0 },
+  'NU' => { gst: 0.05, pst: 0.0, hst: 0.0 },
+  'ON' => { gst: 0.0, pst: 0.0, hst: 0.13 },
+  'PE' => { gst: 0.0, pst: 0.0, hst: 0.15 },
+  'QC' => { gst: 0.05, qst: 0.09975, hst: 0.0 },
+  'SK' => { gst: 0.05, pst: 0.06, hst: 0.0 },
+  'YT' => { gst: 0.05, pst: 0.0, hst: 0.0 }
+}.freeze
+
   # Validations
   validates :order_status, :payment_status, :user_id, :province, presence: true
-  validates :order_number, uniqueness: true
   validates :province, inclusion: { in: PROVINCIAL_TAX_RATES.keys }
+  validates :order_number, uniqueness: true
   validates :subtotal, :total, :tax_amount, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   # Callbacks
@@ -49,7 +49,7 @@ class Order < ApplicationRecord
   before_save :calculate_financials, if: :should_recalculate_financials?
   after_commit :update_order_totals, on: [:create, :update]
 
-  # Ransack configuration for ActiveAdmin searching
+  # Ransack configuration
   def self.ransackable_attributes(auth_object = nil)
     %w[
       billing_address created_at delivery_address email gst hst id
@@ -63,20 +63,22 @@ class Order < ApplicationRecord
     %w[user order_items products]
   end
 
-  # Instance Methods
+  # Tax Calculations
 
   def calculate_subtotal
     order_items.sum(&:total_price).round(2)
   end
 
   def calculate_taxes
-    rates = PROVINCIAL_TAX_RATES[province] || PROVINCIAL_TAX_RATES['ON']
-    current_subtotal = calculate_subtotal
+    return unless province && PROVINCIAL_TAX_RATES[province]
 
-    self.gst = (current_subtotal * (rates[:gst] || 0)).round(2)
-    self.pst = (current_subtotal * (rates[:pst] || 0)).round(2)
-    self.hst = (current_subtotal * (rates[:hst] || 0)).round(2)
-    self.qst = (current_subtotal * (rates[:qst] || 0)).round(2)
+    current_subtotal = calculate_subtotal
+    tax_rates = PROVINCIAL_TAX_RATES[province]
+
+    self.gst = (current_subtotal * (tax_rates[:gst] || 0)).round(2)
+    self.pst = (current_subtotal * (tax_rates[:pst] || 0)).round(2)
+    self.hst = (current_subtotal * (tax_rates[:hst] || 0)).round(2)
+    self.qst = (current_subtotal * (tax_rates[:qst] || 0)).round(2)
     self.tax_amount = (gst + pst + hst + qst).round(2)
   end
 
@@ -140,8 +142,7 @@ class Order < ApplicationRecord
   def should_recalculate_financials?
     order_items.loaded? && (
       order_items.any? { |item| item.new_record? || item.quantity_changed? } ||
-      order_items.any?(&:marked_for_destruction?) ||
-      province_changed?
+      order_items.any?(&:marked_for_destruction?)
     )
   end
 end
